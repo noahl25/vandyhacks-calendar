@@ -60,9 +60,14 @@ export default function JudgeSchedule({name, schedule}) {
                 {
                     schedule.map((item, key) => {
                         return (
-                            <div key={`${key}-schedule-item`} className="absolute rounded-lg right-0 p-2" style={{ top: `${toRatioAfterMidnight(item.start)}%`, bottom: `${100 - toRatioAfterMidnight(item.end)}%`, left: left + "px", backgroundColor: item.color, opacity: "0.9" }}>
-                                <div className="text-center text-lg text-black/70">{item.teamName}</div>
-                                <div className="text-center text-black/50">{item.start}-{item.end}</div>
+                            <div key={`${key}-schedule-item`} className="absolute rounded-lg right-0 grid place-items-center overflow-hidden" style={{ top: `${toRatioAfterMidnight(item.start)}%`, bottom: `${100 - toRatioAfterMidnight(item.end)}%`, left: left + "px", backgroundColor: item.color, opacity: "0.9" }}>
+                                <div>
+                                    <div className="text-center text-lg text-black/70">{item.teamName}</div>
+                                    {
+                                        Math.abs(toRatioAfterMidnight(item.start) - toRatioAfterMidnight(item.end)) >= 4 &&
+                                        <div className="text-center text-black/50">{item.start} - {item.end}</div>
+                                    }
+                                </div>
                             </div>
                         )
                     })
