@@ -5,7 +5,6 @@
         font-family: 'Lexend', Times, serif;
         background-color: oklch(98.5% 0.001 106.423);
         user-select: none;
-        scrollbar-gutter: stable;
     }
 }
 
