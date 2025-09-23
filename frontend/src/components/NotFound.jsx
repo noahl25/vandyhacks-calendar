@@ -1,3 +1,4 @@
+// Simple message for when navigating to an unknown path.
 export default function NotFound() {
     return (
         <div className='min-w-screen min-h-screen grid place-items-center'>

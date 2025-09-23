@@ -1,4 +1,4 @@
-import { CodeXml, FileTerminal } from "lucide-react";
+import { CodeXml } from "lucide-react";
 
 export default function Navbar() {
     return <div className="static w-screen h-[75px] bg-stone-100 flex justify-start items-center border-b-1 border-stone-200 shadow-lg">

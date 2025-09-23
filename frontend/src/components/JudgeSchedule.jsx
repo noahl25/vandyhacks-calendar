@@ -6,6 +6,8 @@ export default function JudgeSchedule({name, schedule}) {
     const [left, setLeft] = useState(0);
     
     const toRatioAfterMidnight = (time) => {
+
+        // Convert time (e.g. 12:00 AM) to percent 0-100 after midnight. For positioning purposes.
         const [raw, meridian] = time.split(" ");
         let [hours, minutes] = raw.split(":").map(Number);
 
@@ -21,6 +23,7 @@ export default function JudgeSchedule({name, schedule}) {
 
     useEffect(() => {
 
+        // Setup times from 12 AM - 12 AM.
         setTimes(["12 AM"]);
 
         const addTimes = (postfix) => {
@@ -34,10 +37,9 @@ export default function JudgeSchedule({name, schedule}) {
         addTimes("PM");
         setTimes(prev => ([...prev, "12 AM"]));
 
+        // Get width of time (e.g. 12 AM) so the events are correctly positioned.
         const timeComp = document.querySelector(".time-component");
         setLeft(timeComp.getBoundingClientRect().width);
-
-        console.log(timeComp.getBoundingClientRect().width);
 
     }, []);
 
