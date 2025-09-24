@@ -19,12 +19,12 @@ export default function JudgeSchedule({name, schedule}) {
         }
 
         const minutesAfterMidnight = hours * 60 + minutes;
-        return minutesAfterMidnight / (25 * 60) * 100;
+        return minutesAfterMidnight / (24 * 60) * 100;
     }
 
     useEffect(() => {
 
-        // Setup times from 12 AM - 12 AM.
+        // Setup times from 12 AM - 11 PM.
         setTimes(["12 AM"]);
 
         const addTimes = (postfix) => {
@@ -37,14 +37,14 @@ export default function JudgeSchedule({name, schedule}) {
         setTimes(prev => ([...prev, "Noon"]));
         addTimes("PM");
 
-        // Get width of time (e.g. 12 AM) so the events are correctly positioned.
+        // Get width of time (e.g. 12 AM) so the events are correctly positioned from the left.
         const timeComp = document.querySelector(".time-component");
         setLeft(timeComp.getBoundingClientRect().width);
 
     }, []);
 
     return (
-        <div className="w-70 ml-10 mb-5">
+        <div className="w-70 ml-10 mb-5 opacity-0 fade-in">
             <div className="text-xl mb-3 mx-auto text-center ml-14 flex justify-center items-center flex-wrap gap-1">
                 <span>{name}</span>
                 <Plus className="hover:scale-125 transition-all duration-500 ease-in-out cursor-pointer"/>

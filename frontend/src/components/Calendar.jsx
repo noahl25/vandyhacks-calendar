@@ -1,15 +1,58 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import JudgeSchedule from "./JudgeSchedule";
-import { Plus, Search } from "lucide-react";
+import { ArrowRight, Plus, Search, UserRoundPen } from "lucide-react";
 import { useApi } from "../lib/api";
 
 // const judges = [{ schedule: [{ start: "3:00 AM", end: "6:00 AM", color: "#389ec9ff", teamName: "VandyHacks" }], name: "Greg H" }]
+
+const AddJudge = ({ setVisible }) => {
+
+    const [judgeName, setJudgeName] = useState("");
+    const [placeholder, setPlaceholder] = useState("Name...")
+
+    const { makeRequest } = useApi();
+
+    const addJudge = () => {
+
+        if (judgeName === "") return;
+
+        makeRequest("create-judge", {
+            method: "POST",
+            body: JSON.stringify({
+                "name": judgeName
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+
+            if (response.response.includes("Error")) {
+                setPlaceholder(response.response)
+            }
+            else {
+                setVisible(false);
+            }
+
+        })
+
+    }
+
+
+    return (
+        <div className="absolute left-1/2 translate-y-[10px] -translate-x-1/2 w-[300px] h-[50px] border-3 rounded-full flex justify-center items-center bg-[oklch(98.5% 0.001 106.423)] z-120">
+            <UserRoundPen className="absolute left-3 top-1/2 -translate-y-[13.5px]"/>
+            <ArrowRight onClick={addJudge} size={25} className="absolute right-3 top-1/2 -translate-y-[13.5px]" />
+            <input onChange={(e) => setJudgeName(e.target.value)} type="text" id="filter" name="filter" placeholder={placeholder} className="w-full h-full text-sm ml-[42px] outline-none mr-10 relative -translate-y-[1px]"/>
+        </div>
+    )
+}
 
 export default function Calendar() {
 
     const [date, setDate] = useState("");
     const [judges, setJudges] = useState([]);
     const [filteredJudges, setFilteredJudges] = useState([]);
+    const [addJudge, setAddJudge] = useState(false);
     const [render, setRender] = useState(false);
 
     const { makeRequest } = useApi();
@@ -32,7 +75,7 @@ export default function Calendar() {
             setRender(true);
         });
 
-    }, []);
+    }, [addJudge]);
 
     const onFilterChange = (e) => {
 
@@ -52,14 +95,17 @@ export default function Calendar() {
     if (render) {
         return (
             <>
-                <div className="w-full h-25 relative text-3xl">
-                    <div className="ml-10 text-center absolute top-1/2 -translate-y-1/2 left-0">{date}</div>
-                    <div className="text-center absolute top-1/2 -translate-y-1/2 mr-10 right-0 text-[20px] flex justify-center items-center hover:text-stone-600 cursor-pointer transition-all duration-500 ease-in-out">
-                        Add Judge
-                    </div>
-                    <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-[300px] h-[45px] rounded-full border-3 flex justify-center items-center">
+                <div className="w-full h-25 relative text-3xl grid grid-cols-3 items-center justify-center">
+                    <div className="ml-10 text-center opacity-0 lg:opacity-100 transition-all duration-500 ease-in-out">{date}</div>
+                    <div className="w-[300px] h-[45px] rounded-full border-3 flex justify-center items-center relative mx-auto">
                         <Search className="absolute left-2 top-1/2 -translate-y-1/2"/>
                         <input onChange={onFilterChange} type="text" id="filter" name="filter" placeholder="Find judge/team..." className="w-full h-full text-sm ml-[37px] outline-none mr-5"/>
+                    </div>
+                    <div className="relative opacity-0 md:opacity-100 text-center text-[20px] group cursor-pointer">
+                        <div onClick={() => setAddJudge(prev => !prev)} className="hover:text-stone-600 transition-all duration-300 ease-in-out">Add Judge</div>
+                        {
+                            addJudge && <AddJudge setVisible={setAddJudge}/>
+                        }
                     </div>
                 </div>
                 {
