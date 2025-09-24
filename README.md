@@ -1,6 +1,6 @@
 # VandyHacks-Calendar
 
-Simple hackathon judging schedule creator made for the VandyHacks application.
+Simple hackathon judging schedule creator made for the **VandyHacks** application.
 
 # Technologies Used
 
