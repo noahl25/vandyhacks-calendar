@@ -8,7 +8,8 @@ import { useApi } from "../lib/api";
 const AddJudge = ({ setVisible }) => {
 
     const [judgeName, setJudgeName] = useState("");
-    const [placeholder, setPlaceholder] = useState("Name...")
+    const [placeholder, setPlaceholder] = useState("Name...");
+    const inputRef = useRef(null);
 
     const { makeRequest } = useApi();
 
@@ -27,6 +28,7 @@ const AddJudge = ({ setVisible }) => {
         }).then((response) => {
 
             if (response.response.includes("Error")) {
+                inputRef.current.value = "";
                 setPlaceholder(response.response)
             }
             else {
@@ -39,10 +41,10 @@ const AddJudge = ({ setVisible }) => {
 
 
     return (
-        <div className="absolute left-1/2 translate-y-[10px] -translate-x-1/2 w-[300px] h-[50px] border-3 rounded-full flex justify-center items-center bg-[oklch(98.5% 0.001 106.423)] z-120">
+        <div className="absolute left-1/2 translate-y-[10px] -translate-x-1/2 w-[300px] h-[50px] border-3 rounded-full flex justify-center items-center bg-[oklch(98.5%_0.001_106.423)] z-120">
             <UserRoundPen className="absolute left-3 top-1/2 -translate-y-[13.5px]"/>
-            <ArrowRight onClick={addJudge} size={25} className="absolute right-3 top-1/2 -translate-y-[13.5px]" />
-            <input onChange={(e) => setJudgeName(e.target.value)} type="text" id="filter" name="filter" placeholder={placeholder} className="w-full h-full text-sm ml-[42px] outline-none mr-10 relative -translate-y-[1px]"/>
+            <ArrowRight onClick={addJudge} size={25} className="absolute right-3 top-1/2 -translate-y-[13.5px] transition-all duration-300 ease-in-out"/>
+            <input ref={inputRef} required onChange={(e) => setJudgeName(e.target.value)} type="text" id="filter" name="filter" autoComplete="off" placeholder={placeholder} className="w-full h-full text-sm ml-[42px] outline-none mr-10 relative -translate-y-[1px]"/>
         </div>
     )
 }
@@ -114,7 +116,7 @@ export default function Calendar() {
                         {
                             filteredJudges.map((item, key) => {
                                 return (
-                                    <JudgeSchedule name={item.name} schedule={item.schedule} key={`judge-schedule-parent-${key}`}/>
+                                    <JudgeSchedule name={item.name} schedule={item.schedule} key={item.name}/>
                                 )
                             })
                         }

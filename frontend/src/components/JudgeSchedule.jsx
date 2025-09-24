@@ -1,10 +1,96 @@
-import { Plus } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
 import { useEffect, useState } from "react"
+import { useApi } from "../lib/api";
+
+const CreateEvent = ({ judgeName, setVisible }) => {
+
+    const [teamName, setTeamName] = useState("");
+    const [start, setStart] = useState("");
+    const [end, setEnd] = useState("");
+    const [error, setError] = useState("");
+
+    const setTimeFromMilitary = (e, start) => {
+        
+        // Convert from military time and set start or end.
+        const militaryTime = e.target.value;
+        let [hours, minutes] = militaryTime.split(":").map(Number);
+
+        let meridian = "AM";
+        if (hours > 12) {
+            hours -= 12;
+            meridian = "PM";
+        }
+        else if (hours == 12) {
+            meridian = "PM";
+        }
+        else if (hours == 0) {
+            hours = 12;
+        }
+
+        if (start) {
+            setStart(`${hours}:${String(minutes).padStart(2, "0")} ${meridian}`);
+        }
+        else {
+            setEnd(`${hours}:${String(minutes).padStart(2, "0")} ${meridian}`);
+        }
+
+    }
+
+    const { makeRequest } = useApi();
+
+    const onSubmit = () => {
+
+        if (start === "" || end === "" || teamName === "")
+            return;
+
+        makeRequest("create-event", {
+            method: "POST",
+            body: JSON.stringify({
+                "judge_name": judgeName,
+                "team_name": teamName,
+                "start": start,
+                "end": end
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+
+            if (response.response.includes("Error")) {
+                setError(response.response);
+            }
+            else {
+                setVisible(false);
+            }
+
+        })
+    }
+
+    return (
+        <div className="absolute w-[225px] bg-[oklch(98.5%_0.001_106.423)] border-3 rounded-xl top-7 -right-25 z-80 p-3">
+            <div className="mb-1.5">
+                <span>Team Name</span>
+                <input onChange={(e) => setTeamName(e.target.value)} type="text" id="name" name="name" autoComplete="off" autoCorrect="off" placeholder="Name..." className="outline-none text-center w-full rounded-xl" />
+            </div>
+            <div className="flex flex-wrap justify-start gap-2">
+                <span>Start</span>
+                <input type="time" onChange={(e) => setTimeFromMilitary(e, true)}></input>
+                <span>End</span>
+                <input type="time" onChange={(e) => setTimeFromMilitary(e, false)} className="ml-[12px]"></input>
+            </div>
+            <ArrowRight onClick={onSubmit} className="mx-auto mt-1.5 mb-1.5 hover:scale-120 transition-all duration-300 ease-in-out cursor-pointer" size={30}/>
+            {
+                error.length >= 0 && <div className="text-center text-red-500">{error}</div>
+            }
+        </div>
+    )
+}
 
 export default function JudgeSchedule({name, schedule}) {
 
     const [times, setTimes] = useState(["12 AM"]);
     const [left, setLeft] = useState(0);
+    const [addEvent, setAddEvent] = useState(false);
     
     const toRatioAfterMidnight = (time) => {
 
@@ -45,9 +131,12 @@ export default function JudgeSchedule({name, schedule}) {
 
     return (
         <div className="w-70 ml-10 mb-5 opacity-0 fade-in">
-            <div className="text-xl mb-3 mx-auto text-center ml-14 flex justify-center items-center flex-wrap gap-1">
+            <div className="text-xl mb-3 mx-auto text-center ml-14 flex justify-center items-center flex-wrap gap-1 relative">
                 <span>{name}</span>
-                <Plus className="hover:scale-125 transition-all duration-500 ease-in-out cursor-pointer"/>
+                <Plus onClick={() => setAddEvent(prev => !prev)} className="hover:scale-125 transition-all duration-500 ease-in-out cursor-pointer"/>
+                { 
+                    addEvent && <CreateEvent judgeName={name} setVisible={setAddEvent}/> 
+                }
             </div>
             <div className="w-full relative">
                 {
@@ -79,7 +168,6 @@ export default function JudgeSchedule({name, schedule}) {
                 }
             </div>
         </div>
-        
     )
 
 }
