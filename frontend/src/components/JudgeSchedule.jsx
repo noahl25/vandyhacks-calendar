@@ -1,8 +1,8 @@
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react"
 import { useApi } from "../lib/api";
 
-const CreateEvent = ({ judgeName, setVisible }) => {
+const CreateEvent = ({ judgeName, setVisible, refresh }) => {
 
     const [teamName, setTeamName] = useState("");
     const [start, setStart] = useState("");
@@ -61,6 +61,7 @@ const CreateEvent = ({ judgeName, setVisible }) => {
             }
             else {
                 setVisible(false);
+                refresh(prev => prev + 1);
             }
 
         })
@@ -68,6 +69,7 @@ const CreateEvent = ({ judgeName, setVisible }) => {
 
     return (
         <div className="absolute w-[225px] bg-[oklch(98.5%_0.001_106.423)] border-3 rounded-xl top-7 -right-25 z-80 p-3">
+            <X className="absolute right-2 top-2 hover:scale-120 transition-all duration-300 ease-in-out cursor-pointer" onClick={() => setVisible(false)} />
             <div className="mb-1.5">
                 <span>Team Name</span>
                 <input onChange={(e) => setTeamName(e.target.value)} type="text" id="name" name="name" autoComplete="off" autoCorrect="off" placeholder="Name..." className="outline-none text-center w-full rounded-xl" />
@@ -78,7 +80,7 @@ const CreateEvent = ({ judgeName, setVisible }) => {
                 <span>End</span>
                 <input type="time" onChange={(e) => setTimeFromMilitary(e, false)} className="ml-[12px]"></input>
             </div>
-            <ArrowRight onClick={onSubmit} className="mx-auto mt-1.5 mb-1.5 hover:scale-120 transition-all duration-300 ease-in-out cursor-pointer" size={30}/>
+            <ArrowRight onClick={onSubmit} className="mx-auto mt-1.5 mb-1 hover:scale-120 transition-all duration-300 ease-in-out cursor-pointer" size={30}/>
             {
                 error.length >= 0 && <div className="text-center text-red-500">{error}</div>
             }
@@ -86,7 +88,7 @@ const CreateEvent = ({ judgeName, setVisible }) => {
     )
 }
 
-export default function JudgeSchedule({name, schedule}) {
+export default function JudgeSchedule({name, schedule, refresh}) {
 
     const [times, setTimes] = useState(["12 AM"]);
     const [left, setLeft] = useState(0);
@@ -135,7 +137,7 @@ export default function JudgeSchedule({name, schedule}) {
                 <span>{name}</span>
                 <Plus onClick={() => setAddEvent(prev => !prev)} className="hover:scale-125 transition-all duration-500 ease-in-out cursor-pointer"/>
                 { 
-                    addEvent && <CreateEvent judgeName={name} setVisible={setAddEvent}/> 
+                    addEvent && <CreateEvent refresh={refresh} judgeName={name} setVisible={setAddEvent}/> 
                 }
             </div>
             <div className="w-full relative">
@@ -154,7 +156,7 @@ export default function JudgeSchedule({name, schedule}) {
                 {
                     left > 0 && schedule.map((item, key) => {
                         return (
-                            <div key={`${key}-schedule-item`} className="absolute rounded-lg right-0 grid place-items-center overflow-hidden" style={{ top: `${toRatioAfterMidnight(item.start)}%`, bottom: `${100 - toRatioAfterMidnight(item.end)}%`, left: left + "px", backgroundColor: item.color, opacity: "0.9" }}>
+                            <div key={`${key}-schedule-item`} className="absolute rounded-lg right-0 grid place-items-center overflow-hidden ml-[2px] mr-[1.5px]" style={{ top: `${toRatioAfterMidnight(item.start)}%`, bottom: `${100 - toRatioAfterMidnight(item.end)}%`, left: left + "px", backgroundColor: item.color, opacity: "0.98" }}>
                                 <div>
                                     <div className="text-center text-lg text-black/70">{item.teamName}</div>
                                     {

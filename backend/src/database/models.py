@@ -12,7 +12,7 @@ class Judges(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
 
-    times = relationship("Times", primaryjoin="Judges.id==Times.judge_id")
+    times = relationship("Times", primaryjoin="Judges.id==Times.judge_id", viewonly=True)
 
 
 class Times(Base):
@@ -23,6 +23,14 @@ class Times(Base):
     team_name = Column(String, nullable=False)
     start = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=False)
+    color = relationship("TeamColors", primaryjoin="Times.team_name==TeamColors.team_name", viewonly=True, uselist=False)
+
+class TeamColors(Base):
+    __tablename__ = "TeamColors"
+
+    id = Column(Integer, primary_key=True)
+    team_name = Column(String, ForeignKey("Times.team_name"), nullable=False, unique=True)
+    color = Column(String, unique=True, nullable=False)
 
 
 Base.metadata.create_all(engine)

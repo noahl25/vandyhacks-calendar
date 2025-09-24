@@ -56,6 +56,7 @@ export default function Calendar() {
     const [filteredJudges, setFilteredJudges] = useState([]);
     const [addJudge, setAddJudge] = useState(false);
     const [render, setRender] = useState(false);
+    const [refresh, setRefresh] = useState(false); // Hacky way to get state to update when adding an event from JudgeSchedule.
 
     const { makeRequest } = useApi();
 
@@ -77,7 +78,7 @@ export default function Calendar() {
             setRender(true);
         });
 
-    }, [addJudge]);
+    }, [addJudge, refresh]);
 
     const onFilterChange = (e) => {
 
@@ -101,7 +102,7 @@ export default function Calendar() {
                     <div className="ml-10 text-center opacity-0 lg:opacity-100 transition-all duration-500 ease-in-out">{date}</div>
                     <div className="w-[300px] h-[45px] rounded-full border-3 flex justify-center items-center relative mx-auto">
                         <Search className="absolute left-2 top-1/2 -translate-y-1/2"/>
-                        <input onChange={onFilterChange} type="text" id="filter" name="filter" placeholder="Find judge/team..." className="w-full h-full text-sm ml-[37px] outline-none mr-5"/>
+                        <input onChange={onFilterChange} type="text" id="filter" name="filter" autoComplete="off" autoCorrect="off" placeholder="Find judge/team..." className="w-full h-full text-sm ml-[37px] outline-none mr-5"/>
                     </div>
                     <div className="relative opacity-0 md:opacity-100 text-center text-[20px] group cursor-pointer">
                         <div onClick={() => setAddJudge(prev => !prev)} className="hover:text-stone-600 transition-all duration-300 ease-in-out">Add Judge</div>
@@ -116,7 +117,7 @@ export default function Calendar() {
                         {
                             filteredJudges.map((item, key) => {
                                 return (
-                                    <JudgeSchedule name={item.name} schedule={item.schedule} key={item.name}/>
+                                    <JudgeSchedule refresh={setRefresh} name={item.name} schedule={item.schedule} key={item.name}/>
                                 )
                             })
                         }
