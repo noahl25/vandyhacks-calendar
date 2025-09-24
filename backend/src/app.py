@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routes import calender
+from .routes import calendar
 
 app = FastAPI()
 
@@ -13,4 +13,4 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-app.include_router(calender.router, prefix="/api/calender")
+app.include_router(calendar.router, prefix="/api")

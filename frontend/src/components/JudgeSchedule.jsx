@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import { useEffect, useState } from "react"
 
 export default function JudgeSchedule({name, schedule}) {
@@ -35,7 +36,6 @@ export default function JudgeSchedule({name, schedule}) {
         addTimes("AM");
         setTimes(prev => ([...prev, "Noon"]));
         addTimes("PM");
-        setTimes(prev => ([...prev, "12 AM"]));
 
         // Get width of time (e.g. 12 AM) so the events are correctly positioned.
         const timeComp = document.querySelector(".time-component");
@@ -45,8 +45,11 @@ export default function JudgeSchedule({name, schedule}) {
 
     return (
         <div className="w-70 ml-10 mb-5">
-            <div className="text-xl mb-3 mx-auto text-center ml-10">{name}</div>
-            <div className="w-full relative overflow-hidden">
+            <div className="text-xl mb-3 mx-auto text-center ml-14 flex justify-center items-center flex-wrap gap-1">
+                <span>{name}</span>
+                <Plus className="hover:scale-125 transition-all duration-500 ease-in-out cursor-pointer"/>
+            </div>
+            <div className="w-full relative">
                 {
                     times.map((time, key) => {
                         return (
