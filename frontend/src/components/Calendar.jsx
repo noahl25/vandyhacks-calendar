@@ -5,9 +5,9 @@ import { Plus, Search } from "lucide-react";
 export default function Calendar() {
 
     const [date, setDate] = useState("");
-    const judges = [{ schedule: [{ start: "3:00 AM", end: "6:00 AM", color: "#389ec9ff", teamName: "VandyHacks" }, { start: "9:00 AM", end: "10:00 AM", color: "#c7481aff", teamName: "VandyHacks" }] }, { schedule: [{ start: "3:00 AM", end: "6:00 AM", color: "#389ec9ff", teamName: "VandyHacks" }, { start: "9:00 AM", end: "10:00 AM", color: "#c7481aff", teamName: "VandyHacks" }] }, { schedule: [{ start: "3:00 AM", end: "6:00 AM", color: "#389ec9ff", teamName: "VandyHacks" }, { start: "9:00 AM", end: "10:00 AM", color: "#c7481aff", teamName: "VandyHacks" }] }, { schedule: [{ start: "3:00 AM", end: "6:00 AM", color: "#389ec9ff", teamName: "VandyHacks" }, { start: "9:00 AM", end: "10:00 AM", color: "#c7481aff", teamName: "VandyHacks" }] }, { schedule: [{ start: "3:00 AM", end: "6:00 AM", color: "#389ec9ff", teamName: "VandyHacks" }, { start: "9:00 AM", end: "10:00 AM", color: "#c7481aff", teamName: "VandyHacks" }] }, { schedule: [{ start: "3:00 AM", end: "6:00 AM", color: "#389ec9ff", teamName: "VandyHacks" }, { start: "9:00 AM", end: "10:00 AM", color: "#c7481aff", teamName: "VandyHacks" }] } ]
-    const judges1 = [{ schedule: [{ start: "3:00 AM", end: "6:00 AM", color: "#389ec9ff", teamName: "VandyHacks" }, { start: "9:00 AM", end: "10:00 AM", color: "#c7481aff", teamName: "VandyHacks" }] }, { schedule: [{ start: "3:00 AM", end: "6:00 AM", color: "#389ec9ff", teamName: "VandyHacks" }, { start: "9:00 AM", end: "10:00 AM", color: "#c7481aff", teamName: "VandyHacks" }] },]
-    
+    const judges = [{ schedule: [{ start: "3:00 AM", end: "6:00 AM", color: "#389ec9ff", teamName: "VandyHacks" }], name: "Greg Oppenheimer" }]
+    const [filteredJudges, setFilteredJudges] = useState([]);
+
     useEffect(() => {
 
         const today = new Date();
@@ -17,7 +17,25 @@ export default function Calendar() {
         });
         setDate(formattedDate);
 
+        setFilteredJudges([...judges]);
+
     }, []);
+
+    const onFilterChange = (e) => {
+
+        // Set judges so only show judges with name that match input or judges with team that match input
+        setFilteredJudges(judges.filter((obj) => {
+            console.log(obj);
+            let hasTeamInSchedule = false;
+            const input = e.target.value;
+            for (const event of obj.schedule) {
+                if (event.teamName.includes(input))
+                    hasTeamInSchedule = true;
+            }
+            return hasTeamInSchedule || obj.name.includes(input);
+        }));
+
+    }
 
 
     return (
@@ -29,18 +47,23 @@ export default function Calendar() {
                 </div>
                 <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-[300px] h-[45px] rounded-full border-3 flex justify-center items-center">
                     <Search className="absolute left-2 top-1/2 -translate-y-1/2"/>
-                    <input type="text" id="filter" name="filter" placeholder="Find judge/team..." className="w-full h-full text-sm ml-[37px] outline-none mr-5"/>
+                    <input onChange={onFilterChange} type="text" id="filter" name="filter" placeholder="Find judge/team..." className="w-full h-full text-sm ml-[37px] outline-none mr-5"/>
                 </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-10 gap-10">
-                {
-                    judges.map((item, key) => {
-                        return (
-                            <JudgeSchedule name="Bob Joe" schedule={item.schedule} key={`judge-schedule-parent-${key}`}/>
-                        )
-                    })
-                }
-            </div>
+            {
+                filteredJudges.length !== 0 ? 
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-10 gap-10">
+                    {
+                        filteredJudges.map((item, key) => {
+                            return (
+                                <JudgeSchedule name={item.name} schedule={item.schedule} key={`judge-schedule-parent-${key}`}/>
+                            )
+                        })
+                    }
+                </div>
+                :
+                <div className="w-full text-center text-xl">no judge schedules yet! add a judge to create one.</div>
+            }
         </>
     )
 }

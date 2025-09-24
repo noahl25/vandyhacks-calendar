@@ -60,7 +60,7 @@ export default function JudgeSchedule({name, schedule}) {
                     })
                 }
                 {
-                    schedule.map((item, key) => {
+                    left > 0 && schedule.map((item, key) => {
                         return (
                             <div key={`${key}-schedule-item`} className="absolute rounded-lg right-0 grid place-items-center overflow-hidden" style={{ top: `${toRatioAfterMidnight(item.start)}%`, bottom: `${100 - toRatioAfterMidnight(item.end)}%`, left: left + "px", backgroundColor: item.color, opacity: "0.9" }}>
                                 <div>

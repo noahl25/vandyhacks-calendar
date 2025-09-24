@@ -11,6 +11,7 @@ class Judges(Base):
     id = Column(Integer, primary_key=True)
     judge = Column(String, unique=True, nullable=False)
 
+
 class Times(Base):
     __tablename__ = "Times"
 
