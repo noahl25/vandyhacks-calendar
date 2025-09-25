@@ -5,7 +5,7 @@ Simple hackathon judging schedule creator made for the **VandyHacks** applicatio
 # Technologies Used
 
 Frontend:
-- React, HTML/CSS, JavaScript, TailwindCSS
+- React JS, TailwindCSS
 
 Backend:
 - Python, FastAPI, SQL(ite), SQLAlchemy
