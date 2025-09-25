@@ -80,7 +80,7 @@ async def create_event(request: CreateEventRequest, db: Session = Depends(get_db
     dt_end = datetime.strptime(request.end, "%I:%M %p")
 
     if dt_end < dt_start:
-        return { "response": "Error: End must be before start." }
+        return { "response": "Error: Start must be before start end." }
 
     events_overlap = False
     for time in judge.times:
