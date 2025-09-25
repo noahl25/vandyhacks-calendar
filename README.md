@@ -18,7 +18,7 @@ Helps prevent disorganization and confusion during Hackathons by allowing teams 
 
 First make sure you have Node JS and Python 3.0+ installed.
 
-First, to setup and run the backend, run the following commands:
+To setup and run the backend, run the following commands:
 ```
 cd backend
 python -m venv venv
