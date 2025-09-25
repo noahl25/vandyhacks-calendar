@@ -1,4 +1,4 @@
-import { ArrowRight, Plus, X } from "lucide-react";
+import { ArrowRight, Plus, Trash, X } from "lucide-react";
 import { useEffect, useState } from "react"
 import { useApi } from "../lib/api";
 
@@ -76,9 +76,9 @@ const CreateEvent = ({ judgeName, setVisible, refresh }) => {
             </div>
             <div className="flex flex-wrap justify-start gap-2">
                 <span>Start</span>
-                <input type="time" onChange={(e) => setTimeFromMilitary(e, true)}></input>
+                <input type="time" id="start" onChange={(e) => setTimeFromMilitary(e, true)}></input>
                 <span>End</span>
-                <input type="time" onChange={(e) => setTimeFromMilitary(e, false)} className="ml-[12px]"></input>
+                <input type="time" id="end" onChange={(e) => setTimeFromMilitary(e, false)} className="ml-[12px]"></input>
             </div>
             <ArrowRight onClick={onSubmit} className="mx-auto mt-1.5 mb-1 hover:scale-120 transition-all duration-300 ease-in-out cursor-pointer" size={30}/>
             {
@@ -88,7 +88,7 @@ const CreateEvent = ({ judgeName, setVisible, refresh }) => {
     )
 }
 
-export default function JudgeSchedule({name, schedule, refresh}) {
+export default function JudgeSchedule({name, schedule, refresh, removeJudge}) {
 
     const [times, setTimes] = useState(["12 AM"]);
     const [left, setLeft] = useState(0);
@@ -134,7 +134,8 @@ export default function JudgeSchedule({name, schedule, refresh}) {
     return (
         <div className="w-70 ml-10 mb-5 opacity-0 fade-in">
             <div className="text-xl mb-3 mx-auto text-center ml-14 flex justify-center items-center flex-wrap gap-1 relative">
-                <span>{name}</span>
+                <span className="basis-full">{name}</span>
+                <Trash onClick={() => removeJudge(name)} size={23} className="hover:scale-125 transition-all duration-500 ease-in-out cursor-pointer"/>
                 <Plus onClick={() => setAddEvent(prev => !prev)} className="hover:scale-125 transition-all duration-500 ease-in-out cursor-pointer"/>
                 { 
                     addEvent && <CreateEvent refresh={refresh} judgeName={name} setVisible={setAddEvent}/> 

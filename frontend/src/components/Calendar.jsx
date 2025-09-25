@@ -43,7 +43,7 @@ const AddJudge = ({ setVisible }) => {
     return (
         <div className="absolute left-1/2 translate-y-[10px] -translate-x-1/2 w-[300px] h-[50px] border-3 rounded-full flex justify-center items-center bg-[oklch(98.5%_0.001_106.423)] z-120">
             <UserRoundPen className="absolute left-3 top-1/2 -translate-y-[13.5px]"/>
-            <ArrowRight onClick={addJudge} size={25} className="absolute right-3 top-1/2 -translate-y-[13.5px] transition-all duration-300 ease-in-out"/>
+            <ArrowRight onClick={addJudge} size={25} className="absolute right-3 top-1/2 -translate-y-[13.5px] hover:scale-120 transition-all duration-300 ease-in-out"/>
             <input ref={inputRef} required onChange={(e) => setJudgeName(e.target.value)} type="text" id="filter" name="filter" autoComplete="off" placeholder={placeholder} className="w-full h-full text-sm ml-[42px] outline-none mr-10 relative -translate-y-[1px]"/>
         </div>
     )
@@ -95,6 +95,25 @@ export default function Calendar() {
 
     }
 
+    const filterRef = useRef(null);
+
+    const removeJudge = (name) => {
+
+        makeRequest("delete-judge", {
+            method: "DELETE",
+            body: JSON.stringify({
+                "name": name
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        setJudges(prev => prev.filter((obj) => obj.name !== name));
+        setFilteredJudges(prev => prev.filter((obj) => obj.name !== name));
+
+    }
+
     if (render) {
         return (
             <>
@@ -102,7 +121,7 @@ export default function Calendar() {
                     <div className="ml-10 text-center opacity-0 lg:opacity-100 transition-all duration-500 ease-in-out">{date}</div>
                     <div className="w-[300px] h-[45px] rounded-full border-3 flex justify-center items-center relative mx-auto">
                         <Search className="absolute left-2 top-1/2 -translate-y-1/2"/>
-                        <input onChange={onFilterChange} type="text" id="filter" name="filter" autoComplete="off" autoCorrect="off" placeholder="Find judge/team..." className="w-full h-full text-sm ml-[37px] outline-none mr-5"/>
+                        <input ref={filterRef} onChange={onFilterChange} type="text" id="filter" name="filter" autoComplete="off" autoCorrect="off" placeholder="Find judge/team..." className="w-full h-full text-sm ml-[37px] outline-none mr-5"/>
                     </div>
                     <div className="relative opacity-0 md:opacity-100 text-center text-[20px] group cursor-pointer">
                         <div onClick={() => setAddJudge(prev => !prev)} className="hover:text-stone-600 transition-all duration-300 ease-in-out">Add Judge</div>
@@ -117,7 +136,7 @@ export default function Calendar() {
                         {
                             filteredJudges.map((item, key) => {
                                 return (
-                                    <JudgeSchedule refresh={setRefresh} name={item.name} schedule={item.schedule} key={item.name}/>
+                                    <JudgeSchedule removeJudge={removeJudge} refresh={setRefresh} name={item.name} schedule={item.schedule} key={item.name}/>
                                 )
                             })
                         }

@@ -99,3 +99,20 @@ async def create_event(request: CreateEventRequest, db: Session = Depends(get_db
     db.commit()
 
     return { "response": "success" }
+
+class DeleteJudgeRequest(BaseModel):
+    name: str
+
+@router.delete("/delete-judge")
+async def delete_judge(request: DeleteJudgeRequest, db: Session = Depends(get_db)):
+    
+    judge = db.query(models.Judges).where(func.lower(models.Judges.name) == request.name.lower().strip()).scalar()
+
+    if not judge:
+        return { "response": "Error: Judge does not exist." }
+
+    db.delete(judge)
+    
+    db.query(models.Times).where(models.Times.judge_id == judge.id).delete()
+
+    db.commit()
